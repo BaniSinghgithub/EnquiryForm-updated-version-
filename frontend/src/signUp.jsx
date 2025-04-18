@@ -11,10 +11,11 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const [data, setdata] = useState(null); // for localstorage
+  // const [data, setdata] = useState(null); // for localstorage
   const [showPassword, setShowPassword] = useState(false);
   const [showconfPassword, setShowconfPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+   const API_URL=process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [formData, setFormData] = useState({
     // for form data
     username: "",
@@ -35,18 +36,18 @@ export default function SignUp() {
   // }, []);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setdata(JSON.parse(storedUser));
-      navigate("/form");
-    }
-  }, []);
+      const user = JSON.parse(sessionStorage.getItem("token"));
+      if (user) {
+        // setUser(user);
+        navigate("/form");
+      }
+    }, []);
 
-  useEffect(() => {
-    if (data) {
-      navigate("/form");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (data) {
+  //     navigate("/form");
+  //   }
+  // }, []);
 
   // Function to check email availability
   const checkEmailAvailability = async (email) => {
@@ -57,7 +58,7 @@ export default function SignUp() {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/check-email?email=${email}`
+        `{API_URL}/check-email?email=${email}`
       );
 
       setEmailStatus({
@@ -118,7 +119,7 @@ export default function SignUp() {
 
       // If user not exist, register
       const registerResponse = await axios.post(
-        "http://localhost:5000/api/userRoutes/register",
+        `${API_URL}/api/userRoutes/register`,
         {
           name: userData.name,
           email: userData.email,
@@ -135,7 +136,7 @@ export default function SignUp() {
             isGoogleAuth: true,
           })
         );
-        setdata(JSON.parse(localStorage.getItem("user")));
+        // setdata(JSON.parse(localStorage.getItem("user")));
         setTimeout(() => {
           toast.success("Registration successful!");
         }, 2000);
@@ -183,7 +184,7 @@ export default function SignUp() {
 
     try {
       const registerResponse = await axios.post(
-        "http://localhost:5000/api/userRoutes/register",
+        `${API_URL}/api/userRoutes/register`,
         {
           name: formData.username,
           email: formData.email,
