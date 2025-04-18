@@ -11,22 +11,22 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 //make login page
 const LoginPage = () => {
-  const [User, setUser] = useState([]);
+  // const [User, setUser] = useState([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const API_URL=process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("token"));
     if (user) {
-      setUser(user);
+      // setUser(user);
       navigate("/form");
     }
   }, []);
 
-  const clientId =
-    "713538226120-j4dvkdhdu03r21vr4bm8j7f0lp0u5c4r.apps.googleusercontent.com";
+  const clientId =process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ const LoginPage = () => {
 
     try {
         const loginResponse = await axios.post(
-            "http://localhost:5000/api/userRoutes/login",
+            `${API_URL}/api/login`,
             {
               email: email.toLowerCase(),
               password: password
@@ -47,8 +47,8 @@ const LoginPage = () => {
 
         if (loginResponse.data.success) {
             toast.success("Login successful! Redirecting...");
-            setUser(loginResponse.data.user);
-            localStorage.setItem("user", JSON.stringify(loginResponse.data.user));
+            // setUser(loginResponse.data.user);
+            sessionStorage.setItem("token",loginResponse.data.token);
             setTimeout(() => {
                 navigate("/form");
             }, 1000);
@@ -78,7 +78,7 @@ const LoginPage = () => {
 
       try {
         const loginResponse = await axios.post(
-          "http://localhost:5000/api/userRoutes/loginAuth",
+           `${API_URL}/api/loginAuth`,
           {
             email: user.email,
             password: "google-auth-user"
@@ -90,9 +90,8 @@ const LoginPage = () => {
             toast.success("Login successfully")
             
           }, 2000);
-          setUser(user);
-          const storedUser = JSON.stringify(user);
-          localStorage.setItem("user", storedUser);
+          // setUser(user);
+          sessionStorage.setItem("token",loginResponse.data.token);
           
           toast.success("Login successful!");
           navigate("/form");
