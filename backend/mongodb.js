@@ -1,7 +1,5 @@
-// const dotenv =require("dotenv").config(); // without config it will not work
-// const mongoose = require("mongoose");
+const dotenv =require("dotenv").config(); // without config it will not work
 
-// const MONGO_URL = "mongodb+srv://bani9717:banisingh@enquiryform.dg8rm.mongodb.net/EnquiryForm";
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
